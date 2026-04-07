@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduLens — Year 5 Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<!-- ═══════════════════════════════════════════════════════════
+     FIREBASE SDK  (compat v9 — works with firebase.initializeApp)
+     These must come BEFORE script.js
+════════════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script src="script.js" defer></script>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<div class="app">
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">E</div>
+        <div>
+          <div class="logo-text">EduLens</div>
+          <div class="logo-sub">Year 5 English</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke-width="1.8"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="navigate('students')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="1.8"/><path stroke-width="1.8" d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Students
+      </div>
+      <div class="nav-item" onclick="navigate('classes')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22" stroke-width="1.8"/></svg>
+        Classes
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Assessment</div>
+      <div class="nav-item" onclick="navigate('marking')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-width="1.8" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        AI Marking
+        <div class="notif-dot"></div>
+      </div>
+      <div class="nav-item" onclick="navigate('upload')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8" stroke-width="1.8"/><line x1="12" y1="3" x2="12" y2="15" stroke-width="1.8"/></svg>
+        Upload Data
+      </div>
+      <div class="nav-item" onclick="navigate('reports')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8" stroke-width="1.8"/><line x1="16" y1="13" x2="8" y2="13" stroke-width="1.8"/><line x1="16" y1="17" x2="8" y2="17" stroke-width="1.8"/></svg>
+        Reports
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Instruments</div>
+      <div class="nav-item" onclick="navigate('googleform')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path stroke-width="1.8" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Google Form
+        <div class="notif-dot"></div>
+      </div>
+      <div class="nav-item" onclick="navigate('wayground')">
+        <svg class="nav-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.8" d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8" stroke-width="1.8"/><line x1="12" y1="3" x2="12" y2="15" stroke-width="1.8"/></svg>
+        Wayground
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <!-- Firebase connection indicator -->
+      <div id="firebaseStatus" style="font-size:10px;padding:4px 12px 10px;color:var(--text3)">● Connecting…</div>
+      <div class="teacher-badge">
+        <div class="avatar">T</div>
+        <div class="teacher-info">
+          <div class="teacher-name">Teacher</div>
+          <div class="teacher-role">Year 5 English</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- ════════════════════════════════════════════════════════
+         DASHBOARD PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-dashboard" class="page active">
+      <div class="page-header">
+        <div class="header-row">
+          <div>
+            <h1>Assessment Overview</h1>
+            <p>Aina's Visit to the Park · Formative Assessment · 2026</p>
+          </div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-glass" onclick="navigate('upload')">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><polyline points="17 8 12 3 7 8" stroke-width="2"/><line x1="12" y1="3" x2="12" y2="15" stroke-width="2"/></svg>
+              Upload CSV
+            </button>
+            <button class="btn btn-primary" onclick="navigate('reports')">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke-width="2"/></svg>
+              Export Report
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card" style="--accent-color: var(--accent);">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotal" style="color:var(--accent);">127</div>
+          <div class="stat-sub">Across 4 classes</div>
+          <div class="stat-badge badge-blue">4 classes active</div>
+        </div>
+        <div class="stat-card" style="--accent-color: var(--accent3);">
+          <div class="stat-label">Class Average</div>
+          <div class="stat-value" id="statAvg" style="color:var(--accent3);">21.4<span style="font-size:16px;font-weight:400;color:var(--text3)">/30</span></div>
+          <div class="stat-sub">Combined both components</div>
+          <div class="stat-badge badge-green">↑ Good band</div>
+        </div>
+        <div class="stat-card" style="--accent-color: var(--accent4);">
+          <div class="stat-label">Pending AI Marks</div>
+          <div class="stat-value" id="statPending" style="color:var(--accent4);">38</div>
+          <div class="stat-sub">Open-ended questions</div>
+          <div class="stat-badge badge-red">Action needed</div>
+        </div>
+        <div class="stat-card" style="--accent-color: var(--amber);">
+          <div class="stat-label">Need Intervention</div>
+          <div class="stat-value" id="statIntervention" style="color:var(--amber);">14</div>
+          <div class="stat-sub">Below 13/30 marks</div>
+          <div class="stat-badge badge-amber">Requires attention</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="glass-card glow-blue">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent)"></div>Class Performance Comparison</div>
+          <div class="class-list">
+            <div class="class-row">
+              <div class="class-row-header"><span class="class-name">5 Alfa</span><span class="class-score">23.1 / 30 &nbsp;<span class="pill pill-excellent">Excellent</span></span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:77%;--fill-start:#34d399;--fill-end:#059669;"></div></div>
+            </div>
+            <div class="class-row">
+              <div class="class-row-header"><span class="class-name">5 Beta</span><span class="class-score">21.8 / 30 &nbsp;<span class="pill pill-good">Good</span></span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:73%;--fill-start:#60a5fa;--fill-end:#3b82f6;"></div></div>
+            </div>
+            <div class="class-row">
+              <div class="class-row-header"><span class="class-name">5 Cekal</span><span class="class-score">19.4 / 30 &nbsp;<span class="pill pill-satisfactory">Satisfactory</span></span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:65%;--fill-start:#fbbf24;--fill-end:#d97706;"></div></div>
+            </div>
+            <div class="class-row">
+              <div class="class-row-header"><span class="class-name">5 Delima</span><span class="class-score">18.2 / 30 &nbsp;<span class="pill pill-satisfactory">Satisfactory</span></span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:61%;--fill-start:#fbbf24;--fill-end:#d97706;"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card glow-purple">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent2)"></div>Performance Band Distribution</div>
+          <div class="band-grid">
+            <div class="band-row">
+              <div class="band-label">Excellent (25–30)</div>
+              <div class="band-bar-wrap"><div class="band-bar" style="width:22%;background:linear-gradient(90deg,#34d399,#059669)">22%</div></div>
+              <div class="band-count">28</div>
+            </div>
+            <div class="band-row">
+              <div class="band-label">Good (19–24)</div>
+              <div class="band-bar-wrap"><div class="band-bar" style="width:48%;background:linear-gradient(90deg,#60a5fa,#3b82f6)">48%</div></div>
+              <div class="band-count">61</div>
+            </div>
+            <div class="band-row">
+              <div class="band-label">Satisfactory (13–18)</div>
+              <div class="band-bar-wrap"><div class="band-bar" style="width:19%;background:linear-gradient(90deg,#fbbf24,#d97706)">19%</div></div>
+              <div class="band-count">24</div>
+            </div>
+            <div class="band-row">
+              <div class="band-label">Need Intervention</div>
+              <div class="band-bar-wrap"><div class="band-bar" style="width:11%;background:linear-gradient(90deg,#f87171,#dc2626)">11%</div></div>
+              <div class="band-count">14</div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3)">
+            <span>Total assessed: 127 students</span>
+            <span id="dashPendingLabel">Pending: 38 marks</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="three-col">
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:#60a5fa"></div>Reading (Google Forms)</div>
+          <div style="text-align:center;padding:8px 0 16px">
+            <div class="score-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gr1)" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="94" stroke-linecap="round"/>
+                <defs><linearGradient id="gr1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#818cf8"/></linearGradient></defs>
+              </svg>
+              <div class="score-ring-text"><div class="ring-number" style="color:#60a5fa">10.8</div><div class="ring-total">/ 15</div></div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text3);text-align:center">Class avg · 72% accuracy</div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:#a78bfa"></div>Grammar (Wayground)</div>
+          <div style="text-align:center;padding:8px 0 16px">
+            <div class="score-ring">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#gr2)" stroke-width="10" stroke-dasharray="314" stroke-dashoffset="75" stroke-linecap="round"/>
+                <defs><linearGradient id="gr2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#f472b6"/></linearGradient></defs>
+              </svg>
+              <div class="score-ring-text"><div class="ring-number" style="color:#a78bfa">10.6</div><div class="ring-total">/ 15</div></div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text3);text-align:center">Class avg · 71% accuracy</div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:#34d399"></div>Hardest Questions</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:var(--text2)">Reading Q3 (Evidence)</span><span style="color:var(--red);font-weight:600">48%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:var(--text2)">Reading Q6 (Personal)</span><span style="color:var(--amber);font-weight:600">54%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:var(--text2)">Grammar Q6 (SVA)</span><span style="color:var(--amber);font-weight:600">58%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:var(--text2)">Grammar Q13 (FITB)</span><span style="color:var(--green);font-weight:600">72%</span></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px"><span style="color:var(--text2)">Grammar Q8 (SVA)</span><span style="color:var(--green);font-weight:600">74%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         STUDENTS PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-students" class="page">
+      <div class="page-header">
+        <h1>Students</h1>
+        <p>Individual student results and performance bands</p>
+      </div>
+      <div class="filter-bar">
+        <input class="search-input" id="studentSearch" placeholder="🔍  Search by name…" oninput="filterStudents()">
+        <select class="filter-select" id="classFilter" onchange="filterStudents()">
+          <option value="">All Classes</option>
+          <option>5 Alfa</option><option>5 Beta</option><option>5 Cekal</option><option>5 Delima</option>
+        </select>
+        <select class="filter-select" id="bandFilter" onchange="filterStudents()">
+          <option value="">All Bands</option>
+          <option>Excellent</option><option>Good</option><option>Satisfactory</option><option>Need Intervention</option>
+        </select>
+      </div>
+      <div id="studentGrid" class="student-grid"></div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         CLASSES PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-classes" class="page">
+      <div class="page-header">
+        <h1>Class Analysis</h1>
+        <p>Detailed breakdown by class</p>
+      </div>
+      <div class="tabs" id="classTabs">
+        <div class="tab active" onclick="selectClass(this,'5 Alfa')">5 Alfa</div>
+        <div class="tab" onclick="selectClass(this,'5 Beta')">5 Beta</div>
+        <div class="tab" onclick="selectClass(this,'5 Cekal')">5 Cekal</div>
+        <div class="tab" onclick="selectClass(this,'5 Delima')">5 Delima</div>
+      </div>
+      <div class="two-col">
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent)"></div>Question-by-Question Accuracy</div>
+          <div style="display:flex;flex-direction:column;gap:10px" id="classQBreakdown"></div>
+        </div>
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent2)"></div>Class Summary</div>
+          <div id="classSummaryContent"></div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="section-title" style="margin-bottom:16px"><div class="section-dot" style="background:var(--accent3)"></div>Student List</div>
+        <table class="data-table">
+          <thead><tr><th>Name</th><th>Reading /15</th><th>Grammar /15</th><th>Total /30</th><th>Band</th></tr></thead>
+          <tbody id="classStudentBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         AI MARKING PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-marking" class="page">
+      <div class="page-header">
+        <div class="header-row">
+          <div>
+            <h1>AI Marking</h1>
+            <p>AI-suggested marks for open-ended questions — review and approve</p>
+          </div>
+          <div class="ai-badge"><div class="ai-dot"></div> Claude AI Active</div>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat-card" style="--accent-color:var(--amber)">
+          <div class="stat-label">Pending Review</div>
+          <div class="stat-value" id="pendingCount" style="color:var(--amber)">0</div>
+          <div class="stat-sub">Awaiting teacher approval</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--green)">
+          <div class="stat-label">Approved Today</div>
+          <div class="stat-value" id="approvedCount" style="color:var(--green)">0</div>
+          <div class="stat-sub">Marks confirmed</div>
+        </div>
+        <div class="stat-card" style="--accent-color:var(--accent2)">
+          <div class="stat-label">AI Agreement Rate</div>
+          <div class="stat-value" style="color:var(--accent2)">84%</div>
+          <div class="stat-sub">Teacher kept AI suggestion</div>
+        </div>
+      </div>
+
+      <div class="ai-panel">
+        <div class="ai-header">
+          <div class="section-title" style="margin:0"><div class="section-dot" style="background:var(--accent2)"></div>Open-ended Marking Queue</div>
+          <div class="ai-badge" style="margin-left:auto"><div class="ai-dot"></div> AI Suggestions Ready</div>
+        </div>
+
+        <!-- Marking cards rendered here by renderMarkingQueue() -->
+        <div id="markingQueueContainer"></div>
+
+        <div style="text-align:center;padding:16px 0">
+          <button class="btn btn-primary" id="approveAllBtn" onclick="approveAll()">
+            Approve All Remaining (0)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         UPLOAD PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-upload" class="page">
+      <div class="page-header">
+        <h1>Upload Data</h1>
+        <p>Import Wayground CSV results or sync from Google Sheets</p>
+      </div>
+
+      <div class="two-col">
+        <!-- Wayground CSV upload -->
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent2)"></div>Wayground CSV Upload</div>
+          <p style="font-size:13px;color:var(--text3);margin-bottom:16px">Export the Participant Data report from Wayground and upload it here. Scores are automatically parsed and synced to Firebase.</p>
+
+          <!-- Drop zone with hidden real file input -->
+          <div class="upload-zone" id="csvUploadZone">
+            <input type="file" id="csvFileInput" accept=".csv" style="display:none">
+            <div class="upload-icon">📊</div>
+            <div class="upload-title">Drop Wayground CSV here</div>
+            <div class="upload-sub">or click to browse · .csv files only</div>
+          </div>
+
+          <div class="upload-progress" id="uploadProgress" style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span id="uploadFileName">Parsing file…</span>
+              <span id="uploadPct" style="color:var(--accent)">0%</span>
+            </div>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" id="uploadBar"></div>
+            </div>
+            <div id="uploadStatus" style="font-size:12px;color:var(--text3);margin-top:8px"></div>
+          </div>
+
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--text3)">
+            <strong style="color:var(--text2)">Expected columns:</strong> First Name, Last Name, Score, Accuracy, Correct, Incorrect, Unattempted, Total Time Taken
+          </div>
+        </div>
+
+        <!-- Google Sheets sync -->
+        <div class="glass-card">
+          <div class="section-title"><div class="section-dot" style="background:var(--accent3)"></div>Google Sheets Live Sync</div>
+          <p style="font-size:13px;color:var(--text3);margin-bottom:20px">Connected via Google Apps Script webhook. New Form submissions auto-sync to Firebase within seconds.</p>
+
+          <div style="display:flex;align-items:center;gap:12px;padding:14px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:var(--radius-sm);margin-bottom:16px">
+            <div id="sheetSyncDot" style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></div>
+            <div>
+              <div style="font-size:13px;font-weight:500">Google Sheets</div>
+              <div id="sheetSyncStatus" style="font-size:11px;color:var(--text3)">Checking…</div>
+            </div>
+            <button class="btn btn-glass" id="sheetSyncBtn" style="margin-left:auto;padding:6px 12px;font-size:12px" onclick="syncGoogleSheets()">Sync Now</button>
+          </div>
+
+          <div style="font-size:12px;color:var(--text3)">
+            <div style="margin-bottom:6px"><strong style="color:var(--text2)">Sheet:</strong> Reading (Communicative Skill): Aina's Visit to the Park</div>
+            <div id="sheetResponseCount"><strong style="color:var(--text2)">Responses found:</strong> —</div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Apps Script setup guide -->
+          <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;font-size:12px;color:var(--text3);line-height:1.7">
+            <strong style="color:var(--text2)">⚙️ Setup Guide</strong><br>
+            1. Open your Google Sheet → Extensions → Apps Script<br>
+            2. Paste the Apps Script code below and deploy as Web App<br>
+            3. Copy the Web App URL into <code style="color:var(--accent2)">SHEETS_WEBHOOK_URL</code> in <code style="color:var(--accent2)">script.js</code>
+          </div>
+
+          <div class="divider"></div>
+          <details>
+            <summary style="cursor:pointer;font-size:13px;color:var(--accent);margin-bottom:10px">📋 Show Apps Script Code</summary>
+            <pre style="font-size:11px;color:var(--text3);background:rgba(0,0,0,0.3);padding:12px;border-radius:8px;overflow-x:auto;line-height:1.6">function doGet(e) {
+  var action = e.parameter.action;
+  var ss = SpreadsheetApp.openById(e.parameter.sheetId
+    || 'YOUR_SHEET_ID');
+  var sheet = ss.getSheets()[0];
+  var data = sheet.getDataRange().getValues();
+  var headers = data[0];
+  var responses = data.slice(1).map(function(row) {
+    var obj = {};
+    headers.forEach(function(h,i){ obj[h] = row[i]; });
+    return {
+      name: obj['Nama'] || obj['Name'] || '',
+      class: obj['Kelas'] || obj['Class'] || '',
+      readingScore: obj['Score'] || obj['Skor'] || null
+    };
+  });
+  return ContentService
+    .createTextOutput(JSON.stringify({responses:responses}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+          </details>
+        </div>
+      </div>
+
+      <!-- Upload history -->
+      <div class="glass-card">
+        <div class="section-title" style="margin-bottom:16px"><div class="section-dot" style="background:var(--accent)"></div>Upload History</div>
+        <table class="data-table">
+          <thead><tr><th>File / Source</th><th>Type</th><th>Records</th><th>Uploaded</th><th>Status</th></tr></thead>
+          <tbody id="uploadHistoryBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         REPORTS PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-reports" class="page">
+      <div class="page-header">
+        <div class="header-row">
+          <div>
+            <h1>Reports</h1>
+            <p>Generate and export assessment reports</p>
+          </div>
+          <button class="btn btn-primary" onclick="exportCSVReport()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke-width="2"/><polyline points="7 10 12 15 17 10" stroke-width="2"/><line x1="12" y1="15" x2="12" y2="3" stroke-width="2"/></svg>
+            Export CSV
+          </button>
+        </div>
+      </div>
+      <div class="three-col">
+        <div class="glass-card clickable" onclick="exportCSVReport('class')">
+          <div style="font-size:28px;margin-bottom:12px">📊</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">Class Report</div>
+          <div style="font-size:13px;color:var(--text3)">Full breakdown per class with band distribution and question analysis</div>
+        </div>
+        <div class="glass-card clickable" onclick="exportCSVReport('student')">
+          <div style="font-size:28px;margin-bottom:12px">👤</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">Individual Student Report</div>
+          <div style="font-size:13px;color:var(--text3)">Per-student performance card with scores and AI marking notes</div>
+        </div>
+        <div class="glass-card clickable" onclick="exportCSVReport('intervention')">
+          <div style="font-size:28px;margin-bottom:12px">🚨</div>
+          <div style="font-size:15px;font-weight:600;margin-bottom:6px">Intervention List</div>
+          <div style="font-size:13px;color:var(--text3)">Students scoring below 13/30 — export for support planning</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <div class="section-title" style="margin-bottom:16px"><div class="section-dot" style="background:var(--accent)"></div>Assessment Summary Table</div>
+        <table class="data-table">
+          <thead><tr><th>Class</th><th>Students</th><th>Avg Reading</th><th>Avg Grammar</th><th>Avg Total</th><th>Excellent</th><th>Good</th><th>Satisfactory</th><th>Intervention</th></tr></thead>
+          <tbody id="reportSummaryBody">
+            <tr><td style="color:var(--text)">5 Alfa</td><td>32</td><td>11.4</td><td>11.7</td><td style="color:var(--green);font-weight:600">23.1</td><td>10</td><td>16</td><td>5</td><td>1</td></tr>
+            <tr><td style="color:var(--text)">5 Beta</td><td>30</td><td>11.1</td><td>10.7</td><td style="color:var(--blue);font-weight:600">21.8</td><td>6</td><td>17</td><td>6</td><td>1</td></tr>
+            <tr><td style="color:var(--text)">5 Cekal</td><td>33</td><td>9.8</td><td>9.6</td><td style="color:var(--amber);font-weight:600">19.4</td><td>7</td><td>15</td><td>8</td><td>3</td></tr>
+            <tr><td style="color:var(--text)">5 Delima</td><td>32</td><td>9.3</td><td>8.9</td><td style="color:var(--amber);font-weight:600">18.2</td><td>5</td><td>13</td><td>5</td><td>9</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         GOOGLE FORM PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-googleform" class="page">
+      <div class="page-header">
+        <h1>Google Form</h1>
+        <p>Embedded assessment form for Reading component</p>
+      </div>
+      <div class="glass-card" style="padding:0;overflow:hidden;border-radius:var(--radius)">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfkiKnmxw5Flbz3b8e2ANWXGXLDv77tdYUGmbsLVbkLTjU3WQ/viewform?embedded=true"
+                width="100%" height="820" frameborder="0" marginheight="0" marginwidth="0"
+                style="display:block">Loading…</iframe>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════
+         WAYGROUND PAGE
+    ═════════════════════════════════════════════════════════ -->
+    <div id="page-wayground" class="page">
+      <div class="page-header">
+        <h1>Wayground</h1>
+        <p>Grammar component quiz — students join here</p>
+      </div>
+      <div class="glass-card" style="padding:0;overflow:hidden;border-radius:var(--radius)">
+        <iframe src="https://wayground.com/embed/quiz/69d4e3cda2462be10c61b644"
+                width="100%" height="820" frameborder="0" marginheight="0" marginwidth="0"
+                style="display:block">Loading…</iframe>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- CSV export function (defined here so it has access to studentData via script.js scope) -->
+<script>
+function exportCSVReport(type) {
+  // studentData is defined in script.js (loaded before this)
+  if (typeof studentData === 'undefined') { showToast('No data to export', 'warn'); return; }
+
+  let rows, filename;
+  if (type === 'intervention') {
+    rows = studentData.filter(s => s.band === 'Need Intervention');
+    filename = 'intervention-list.csv';
+  } else if (type === 'class') {
+    rows = studentData;
+    filename = 'class-report.csv';
+  } else {
+    rows = studentData;
+    filename = 'student-report.csv';
+  }
+
+  const header = ['Name','Class','Reading','Grammar','Total','Band'];
+  const csv = [header, ...rows.map(s => [s.name, s.class, s.reading ?? '', s.grammar ?? '', s.total ?? '', s.band])].map(r => r.join(',')).join('\n');
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ ' + filename + ' downloaded');
+}
+</script>
+
+</body>
+</html>
